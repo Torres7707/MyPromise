@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="page-header">Promises-初体验</h2>
+        <button class="btn" id='btn'>抽奖</button>
+    </div>
+    <script>
+        function rand(n, m) {
+            return Math.ceil(Math.random() * (m - n + 1)) + n + 1
+        }
+
+        const btn = document.querySelector('#btn');
+        btn.addEventListener('click', () => {
+            const p = new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    let n = rand(1, 100);
+                    if (n < 30) {
+                        resolve(n);
+                    } else {
+                        reject(n)
+                    }
+                }, 1000)
+            })
+            p.then((value) => {
+                alert(`中奖！中奖号码为${value}`)
+            }, (reason) => {
+                alert(`再接再厉！号码为${reason}`)
+
+            })
+        })
+    </script>
+</body>
+
+</html>
