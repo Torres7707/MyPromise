@@ -195,6 +195,28 @@ MyPromise.race = function (promiseArr) {
 	});
 };
 
+// 添加retry方法
+MyPromise.retry = function (fn, times) {
+	new MyPromise(async (resolve, reject) => {
+		let n = times;
+		while (n--) {
+			try {
+				const result = await fn();
+				console.log('执行成功，结果为：', result);
+				resolve(result);
+				break;
+			} catch (err) {
+				console.log(`执行失败第${times - n}次，结果为：`, err);
+				if (!n) {
+					reject(err);
+				}
+			}
+		}
+	}).catch(() => {
+		console.log(`执行了${times}次，仍为失败！`);
+	});
+};
+
 // test
 // const p = new MyPromise((res, rej) => {
 // 	// setTimeout(() => {
@@ -215,9 +237,22 @@ MyPromise.race = function (promiseArr) {
 // console.log('p:', p, 'result:', result);
 // console.log(p, res);
 
-const p2 = MyPromise.reject(
-	new MyPromise((r, j) => {
-		j('qq');
-	})
-);
-console.log(p2);
+// const p2 = MyPromise.reject(
+// 	new MyPromise((r, j) => {
+// 		j('qq');
+// 	})
+// );
+// console.log(p2);
+
+function fn() {
+	return new MyPromise((resolve, reject) => {
+		let n = Math.random();
+		if (n > 0.8) {
+			resolve(n);
+		} else {
+			reject(n);
+		}
+	});
+}
+
+MyPromise.retry(fn, 10);
